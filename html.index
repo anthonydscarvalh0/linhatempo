@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linha do Tempo: Mulheres que Moldaram a História</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            margin-left: -2px;
+            background: linear-gradient(to bottom, #ec4899, #8b5cf6, #3b82f6);
+        }
+        @media (max-width: 768px) {
+            .timeline-line::before {
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-pink-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="relative overflow-hidden bg-gradient-to-r from-purple-900/40 via-pink-900/45 to-slate-900 border-b border-slate-800 py-16 px-6 text-center">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(236,72,153,0.15),transparent_50%)]"></div>
+        <div class="max-w-4xl mx-auto relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-500/15 border border-pink-500/30 text-pink-300 text-sm font-semibold mb-6 shadow-lg shadow-pink-500/10">
+                <i data-lucide="sparkles" class="w-4 h-4"></i> Linha do Tempo Histórica
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-pink-200 to-pink-400 bg-clip-text text-transparent mb-6">
+                Mulheres que Moldaram a História
+            </h1>
+            <p class="text-slate-300 text-lg sm:text-xl font-normal max-w-2xl mx-auto leading-relaxed mb-8">
+                Uma jornada visual com os marcos essenciais das pioneiras reais da ciência, direitos, artes e sociedade.
+            </p>
+
+            <!-- Actions Bar: Search, Add Button & Filters -->
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
+                <div class="relative w-full md:w-80">
+                    <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                    <input type="text" id="search-input" oninput="handleSearch()" placeholder="Pesquisar por nome ou ano..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-400 focus:outline-none focus:border-pink-500 transition-colors shadow-inner">
+                </div>
+                <button onclick="openAddModal()" class="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white shadow-lg shadow-pink-600/30 transition-all duration-300">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> Adicionar Fato/Foto
+                </button>
+            </div>
+
+            <!-- Filter Categories -->
+            <div class="flex flex-wrap items-center justify-center gap-2.5">
+                <button onclick="filterTimeline('all')" id="btn-all" class="filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 bg-pink-600 text-white shadow-md shadow-pink-600/30">
+                    Todos os Fatos
+                </button>
+                <button onclick="filterTimeline('Século XIX')" id="btn-Século XIX" class="filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 bg-slate-900/80 border border-slate-700 hover:border-pink-500 text-slate-300 hover:text-white">
+                    Século XIX
+                </button>
+                <button onclick="filterTimeline('Primeira Metade')" id="btn-Primeira Metade" class="filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 bg-slate-900/80 border border-slate-700 hover:border-pink-500 text-slate-300 hover:text-white">
+                    1ª Metade séc. XX
+                </button>
+                <button onclick="filterTimeline('Meados')" id="btn-Meados" class="filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 bg-slate-900/80 border border-slate-700 hover:border-pink-500 text-slate-300 hover:text-white">
+                    Meados séc. XX
+                </button>
+                <button onclick="filterTimeline('Final')" id="btn-Final" class="filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 bg-slate-900/80 border border-slate-700 hover:border-pink-500 text-slate-300 hover:text-white">
+                    Final séc. XX
+                </button>
+                <button onclick="filterTimeline('Século XXI')" id="btn-Século XXI" class="filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 bg-slate-900/80 border border-slate-700 hover:border-pink-500 text-slate-300 hover:text-white">
+                    Século XXI
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Timeline -->
+    <main class="max-w-6xl mx-auto px-4 py-20 relative">
+        <div class="timeline-line absolute inset-0 w-full"></div>
+        <div id="timeline-container" class="relative z-10 space-y-16">
+            <!-- Dynamic events injected via JS -->
+        </div>
+        <div id="no-results" class="hidden text-center py-20 text-slate-400">
+            <i data-lucide="search-x" class="w-12 h-12 mx-auto mb-4 text-slate-600"></i>
+            <p class="text-lg">Nenhum fato encontrado para a sua busca.</p>
+        </div>
+    </main>
+
+    <!-- Add Custom Fact Modal -->
+    <div id="add-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm hidden p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeAddModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 p-2 rounded-full transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center">
+                    <i data-lucide="image" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Adicionar Novo Fato</h3>
+                    <p class="text-xs text-slate-400">Insira um marco histórico e o link da foto real</p>
+                </div>
+            </div>
+
+            <form id="fact-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Ano / Período</label>
+                        <input type="text" id="input-year" required placeholder="Ex: 1950" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Categoria / Rótulo</label>
+                        <input type="text" id="input-subtitle" required placeholder="Ex: Brasil / Ciência" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Título do Fato</label>
+                    <input type="text" id="input-title" required placeholder="Ex: Cientista pioneira..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Link Direto da Foto (URL)</label>
+                    <input type="url" id="input-image" required placeholder="https://exemplo.com/foto.jpg" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                    <p class="text-[11px] text-slate-400 mt-1">Dica: Cole o link de uma imagem da internet (ex: Wikimedia Commons).</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Breve Descrição</label>
+                    <textarea id="input-desc" required rows="3" placeholder="Explique o que aconteceu..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-pink-500 resize-none"></textarea>
+                </div>
+                <div class="flex items-center justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-pink-600 hover:bg-pink-500 text-white shadow-md shadow-pink-600/30 transition-all">
+                        Adicionar à Linha do Tempo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-900/50 py-10 text-center text-slate-400 text-sm">
+        <p class="flex items-center justify-center gap-2">
+            Homenagem ao legado e pioneirismo feminino <i data-lucide="heart" class="w-4 h-4 text-pink-500 fill-pink-500"></i>
+        </p>
+    </footer>
+
+    <script>
+        // Initial verified events database with real historical photos (Wikimedia Commons portraits)
+        // DICA: Para mudar a foto de qualquer mulher abaixo, basta alterar a URL no campo 'image' com o link direto (URL) de outra imagem real desejada.
+        const defaultEvents = [
+            // Século XIX
+            {
+                id: 1,
+                century: "Século XIX",
+                year: "1827",
+                title: "Educação Básica Feminina no Brasil",
+                subtitle: "Brasil / Educação",
+                description: "Uma lei imperial permitiu que as meninas frequentassem as escolas de primeiras letras pela primeira vez (embora com matérias focadas em afazeres domésticos).",
+                image: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Colégio_Pedro_II_-_Internato_-_1900.jpg"
+            },
+            {
+                id: 2,
+                century: "Século XIX",
+                year: "1843",
+                title: "Ada Lovelace: Primeira Programadora",
+                subtitle: "Ciência / Computação",
+                description: "Ada Lovelace escreveu o primeiro algoritmo para ser processado por uma máquina, tornando-se a primeira programadora da história da humanidade.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Ada_Lovelace_portrait.jpg"
+            },
+            {
+                id: 3,
+                century: "Século XIX",
+                year: "1879",
+                title: "Acesso ao Ensino Superior no Brasil",
+                subtitle: "Brasil / Ensino Superior",
+                description: "As mulheres ganharam o direito legal de ingressar no ensino superior e frequentar faculdades e universidades brasileiras.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Faculdade_de_Direito_do_Largo_de_São_Francisco_-_USP_-_02.jpg"
+            },
+            {
+                id: 4,
+                century: "Século XIX",
+                year: "1879",
+                title: "Cientistas na Equipe de Thomas Edison",
+                subtitle: "Ciência / Invenção",
+                description: "Cientistas laboratoristas mulheres atuaram no desenvolvimento industrial do isolamento a vácuo e na produção do filamento de carbono da lâmpada elétrica.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9e/Thomas_Edison_by_L.C._Handy%2C_1922_%28cropped%29.jpg"
+            },
+            {
+                id: 5,
+                century: "Século XIX",
+                year: "1887",
+                title: "Rita Lobato: Primeira Médica do Brasil",
+                subtitle: "Brasil / Medicina",
+                description: "Rita Lobato formou-se em medicina na Faculdade de Medicina da Bahia, quebrando barreiras históricas e tornando-se a primeira médica formada no país.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/a/ac/Rita_Lobato_Velho_Lopes.jpg"
+            },
+
+            // Primeira Metade do Século XX
+            {
+                id: 6,
+                century: "Primeira Metade",
+                year: "1903",
+                title: "Marie Curie: 1º Prêmio Nobel",
+                subtitle: "Prêmio Nobel / Física",
+                description: "Marie Curie tornou-se a primeira mulher a ganhar o Prêmio Nobel por descobrir os elementos rádio e polônio e cunhar o termo radioatividade.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/c/c8/Marie_Curie_c._1920s.jpg"
+            },
+            {
+                id: 7,
+                century: "Primeira Metade",
+                year: "1910",
+                title: "Partido Republicano Feminino",
+                subtitle: "Brasil / Política",
+                description: "Foi criado o Partido Republicano Feminino, iniciando a exigência organizada pelo direito das mulheres ao voto no Brasil.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Leolinda_de_Figueiredo_Daltro.jpg"
+            },
+            {
+                id: 8,
+                century: "Primeira Metade",
+                year: "1911",
+                title: "Marie Curie: 2º Prêmio Nobel em Química",
+                subtitle: "Prêmio Nobel / Química",
+                description: "Marie Curie ganhou seu segundo Nobel, consagrando-se como a única pessoa na história a vencer o prêmio em duas áreas científicas diferentes.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/d/d7/Marie_Curie_1911.jpg"
+            },
+            {
+                id: 9,
+                century: "Primeira Metade",
+                year: "1914",
+                title: "Marie Curie e os Carros de Raio-X",
+                subtitle: "Ciência / Raio-X",
+                description: "Na Primeira Guerra Mundial, Marie Curie desenvolveu os primeiros carros radiológicos móveis para as frentes de batalha para diagnosticar soldados e salvar vidas.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/2/2c/Marie_curie_wwi.jpg"
+            },
+            {
+                id: 10,
+                century: "Primeira Metade",
+                year: "1930",
+                title: "Janet Gaynor: 1º Oscar de Melhor Atriz",
+                subtitle: "Cinema / Oscar",
+                description: "Janet Gaynor ganhou o primeiro Oscar de Melhor Atriz da história do cinema mundial.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Janet_Gaynor_in_Seventh_Heaven_trailer.jpg"
+            },
+            {
+                id: 11,
+                century: "Primeira Metade",
+                year: "1932",
+                title: "Conquista do Sufrágio Feminino no Brasil",
+                subtitle: "Brasil / Direitos",
+                description: "O novo Código Eleitoral garantiu o sufrágio feminino (direito ao voto) em todo o território nacional brasileiro.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Berta_Lutz_1922.jpg"
+            },
+            {
+                id: 12,
+                century: "Primeira Metade",
+                year: "1932",
+                title: "Amelia Earhart: Travessia do Atlântico",
+                subtitle: "Mundo / Aviação",
+                description: "Amelia Earhart tornou-se a primeira mulher a realizar um voo solo sem escalas sobre o Oceano Atlântico, quebrando barreiras físicas e de gênero.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Amelia_Earhart_retouched.jpg"
+            },
+            {
+                id: 13,
+                century: "Primeira Metade",
+                year: "1934",
+                title: "Ida Noddack e a Fissão Nuclear",
+                subtitle: "Ciência / Química",
+                description: "A física alemã Ida Noddack publicou a primeira hipótese real sobre a fissão nuclear e descobriu o elemento Rênio, enfrentando ceticismo da época.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/2/25/Ida_Noddack_1959.jpg"
+            },
+            {
+                id: 14,
+                century: "Primeira Metade",
+                year: "1939",
+                title: "Lise Meitner Comprova a Fissão Nuclear",
+                subtitle: "Ciência / Física",
+                description: "Lise Meitner descobriu e comprovou o fenômeno da fissão nuclear (divisão do núcleo do átomo), abrindo caminho para a era nuclear moderna.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/2/29/Lise_Meitner_%281878-1968%29.jpg"
+            },
+            {
+                id: 15,
+                century: "Primeira Metade",
+                year: "1940",
+                title: "Hattie McDaniel Faz História no Oscar",
+                subtitle: "Cinema / Oscar",
+                description: "Hattie McDaniel tornou-se a primeira mulher negra a ganhar um Oscar (Melhor Atriz Coadjuvante pelo filme E o Vento Levou).",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9f/Hattie_McDaniel_1940.jpg"
+            },
+            {
+                id: 16,
+                century: "Primeira Metade",
+                year: "1942",
+                title: "Hedy Lamarr: Invenção do Sistema de Rádio",
+                subtitle: "Ciência / Tecnologia",
+                description: "A inventora e atriz Hedy Lamarr patenteou um sistema de transmissão de rádio que serviu como base direta para a criação do Wi-Fi, Bluetooth e GPS.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/5/5a/Hedy_Lamarr_publicity_photo_for_The_Conspirators_1944.jpg"
+            },
+            {
+                id: 17,
+                century: "Primeira Metade",
+                year: "1946",
+                title: "Voto Obrigatório e Igualitário no Brasil",
+                subtitle: "Brasil / Política",
+                description: "A nova Constituição Federal confirmou e tornou obrigatório o alistamento e o voto para as mulheres em termos iguais aos dos homens.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Berta_Lutz_1922.jpg"
+            },
+
+            // Meados do Século XX
+            {
+                id: 18,
+                century: "Meados",
+                year: "1951",
+                title: "Rosalind Franklin e a 'Foto 51' do DNA",
+                subtitle: "Ciência / Biologia",
+                description: "Rosalind Franklin utilizou cristalografia de Raio-X para capturar a 'Foto 51', descobrindo o formato de dupla hélice do DNA.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Rosalind_Franklin_%28cropped%29.jpg"
+            },
+            {
+                id: 19,
+                century: "Meados",
+                year: "1952",
+                title: "Virginia Apgar e a Escala Apgar",
+                subtitle: "Ciência / Medicina",
+                description: "Virginia Apgar criou a Escala Apgar, o método padrão utilizado mundialmente até hoje para testar a saúde de recém-nascidos.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/b/b5/Virginia_Apgar_1950s.jpg"
+            },
+            {
+                id: 20,
+                century: "Meados",
+                year: "1953",
+                title: "Barbara McClintock e os Genes Saltadores",
+                subtitle: "Ciência / Genética",
+                description: "Barbara McClintock descobriu os transposons no DNA, conquista que lhe rendeu o Prêmio Nobel de Medicina de forma solo em 1983.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Barbara_McClintock_%281949%29.jpg"
+            },
+            {
+                id: 21,
+                century: "Meados",
+                year: "1962",
+                title: "Estatuto da Mulher Casada no Brasil",
+                subtitle: "Brasil / Direito Civil",
+                description: "Aprovado o Estatuto, determinando que a mulher não precisava mais da autorização do marido para trabalhar fora, possuir bens ou receber herança.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Congresso_Nacional_do_Brasil.jpg"
+            },
+            {
+                id: 22,
+                century: "Meados",
+                year: "1962",
+                title: "Katherine Johnson e as Missões da NASA",
+                subtitle: "Ciência / Espaço",
+                description: "A matemática Katherine Johnson, Dorothy Vaughan e Mary Jackson realizaram manualmente os cálculos complexos para as missões espaciais da NASA.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Katherine_Johnson_at_NASA_in_1966.jpg"
+            },
+            {
+                id: 23,
+                century: "Meados",
+                year: "1963",
+                title: "Valentina Tereshkova: 1ª Mulher no Espaço",
+                subtitle: "Espaço / Astronauta",
+                description: "A cosmonauta soviética Valentina Tereshkova tornou-se a primeira mulher a viajar para o espaço, orbitando a Terra 48 vezes.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/2/29/RIAN_archive_44426_First_woman_in_space_Valentina_Tereshkova.jpg"
+            },
+            {
+                id: 24,
+                century: "Meados",
+                year: "1964",
+                title: "Dorothy Hodgkin: Nobel de Química",
+                subtitle: "Prêmio Nobel / Química",
+                description: "Dorothy Hodgkin ganhou o Nobel por mapear através do Raio-X a estrutura tridimensional da penicilina e da insulina.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/e/e2/Dorothy_Hodgkin_1970s.jpg"
+            },
+            {
+                id: 25,
+                century: "Meados",
+                year: "1969",
+                title: "Margaret Hamilton e o Software da Apollo 11",
+                subtitle: "Espaço / Computação",
+                description: "Margaret Hamilton liderou a equipe do MIT que desenvolveu o software de voo da missão Apollo 11, viabilizando o pouso na Lua.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Margaret_Hamilton_1995.jpg"
+            },
+
+            // Final do Século XX
+            {
+                id: 26,
+                century: "Final",
+                year: "1974",
+                title: "Autonomia Financeira das Mulheres no Brasil",
+                subtitle: "Brasil / Direitos",
+                description: "Mulheres conquistaram o direito de assinar contratos e possuir cartão de crédito próprio sem o aval ou assinatura de um homem.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Congresso_Nacional_do_Brasil.jpg"
+            },
+            {
+                id: 27,
+                century: "Final",
+                year: "1977",
+                title: "Aprovação da Lei do Divórcio no Brasil",
+                subtitle: "Brasil / Sociedade",
+                description: "A Lei do Divórcio foi aprovada no país, permitindo a dissolução jurídica definitiva do casamento.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Congresso_Nacional_do_Brasil.jpg"
+            },
+            {
+                id: 28,
+                century: "Final",
+                year: "1979",
+                title: "Fim da Proibição do Futebol Feminino",
+                subtitle: "Brasil / Esporte",
+                description: "Foi revogada a proibição histórica que impedia as mulheres de jogarem futebol e praticarem diversas modalidades esportivas no Brasil.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Brazil_women%27s_national_football_team_2016.jpg"
+            },
+            {
+                id: 29,
+                century: "Final",
+                year: "1983",
+                title: "Sally Ride: 1ª Americana no Espaço",
+                subtitle: "Espaço / Astronauta",
+                description: "Sally Ride fez história como a primeira astronauta norte-americana a ir ao espaço, a bordo do ônibus espacial Challenger.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Sally_Ride_in_1984.jpg"
+            },
+            {
+                id: 30,
+                century: "Final",
+                year: "1985",
+                title: "Primeira Delegacia da Mulher (DDM)",
+                subtitle: "Brasil / Proteção",
+                description: "Foi inaugurada a primeira Delegacia de Defesa da Mulher em São Paulo, servindo de modelo de atendimento especializado para o país.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Sao_Paulo_Cathedral_facade.jpg"
+            },
+            {
+                id: 31,
+                century: "Final",
+                year: "1986",
+                title: "Rita Levi-Montalcini: Nobel de Medicina",
+                subtitle: "Prêmio Nobel / Medicina",
+                description: "A neurologista Rita Levi-Montalcini ganhou o prêmio pela descoberta pioneira do Fator de Crescimento Nervoso (NGF).",
+                image: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Rita_Levi-Montalcini_1986.jpg"
+            },
+            {
+                id: 32,
+                century: "Final",
+                year: "1988",
+                title: "Constituição Cidadã e Igualdade Jurídica",
+                subtitle: "Brasil / Constituição",
+                description: "A nova Constituição Federal decretou a igualdade jurídica absoluta entre homens e mulheres perante a lei brasileira.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Ulysses_Guimarães_1987.jpg"
+            },
+
+            // Século XXI
+            {
+                id: 33,
+                century: "Século XXI",
+                year: "2005",
+                title: "Fim do Termo 'Mulher Honesta' no Código Penal",
+                subtitle: "Brasil / Direito Penal",
+                description: "O termo foi retirado do Código Penal, extinguindo a lei arcaica que anulava crimes de estupro caso o agressor se casasse com a vítima.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Congresso_Nacional_do_Brasil.jpg"
+            },
+            {
+                id: 34,
+                century: "Século XXI",
+                year: "2006",
+                title: "Sanção da Lei Maria da Penha",
+                subtitle: "Brasil / Segurança",
+                description: "Foi sancionada a Lei nº 11.340, estruturando o combate rigoroso à violência doméstica e familiar no Brasil.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/7/70/Maria_da_Penha_2012_%28cropped%29.jpg"
+            },
+            {
+                id: 35,
+                century: "Século XXI",
+                year: "2010",
+                title: "Kathryn Bigelow: Oscar de Melhor Direção",
+                subtitle: "Cinema / Oscar",
+                description: "Kathryn Bigelow consagrou-se como a primeira mulher a vencer o Oscar de Melhor Direção pelo filme Guerra ao Terror.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/91/Kathryn_Bigelow_by_Gage_Skidmore.jpg"
+            },
+            {
+                id: 36,
+                century: "Século XXI",
+                year: "2010",
+                title: "Dilma Rousseff: 1ª Mulher Presidente do Brasil",
+                subtitle: "Brasil / Política",
+                description: "Dilma Rousseff foi eleita a primeira mulher presidente da história do Brasil.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/e/ef/Dilma_Rousseff_-_Foto_Oficial_%28cropped%29.jpg"
+            },
+            {
+                id: 37,
+                century: "Século XXI",
+                year: "2013",
+                title: "Aprovada a PEC das Domésticas",
+                subtitle: "Brasil / Trabalho",
+                description: "Igualou os direitos trabalhistas de uma categoria historicamente composta por mulheres aos demais trabalhadores.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Congresso_Nacional_do_Brasil.jpg"
+            },
+            {
+                id: 38,
+                century: "Século XXI",
+                year: "2015",
+                title: "Entrada em Vigor da Lei do Feminicídio",
+                subtitle: "Brasil / Direito Penal",
+                description: "Qualificou o homicídio contra mulheres por razões de gênero como crime hediondo no ordenamento jurídico brasileiro.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Congresso_Nacional_do_Brasil.jpg"
+            },
+            {
+                id: 39,
+                century: "Século XXI",
+                year: "2020",
+                title: "Charpentier e Doudna: Nobel pelo CRISPR",
+                subtitle: "Prêmio Nobel / Química",
+                description: "Emmanuelle Charpentier e Jennifer Doudna ganharam o Nobel pelo desenvolvimento do CRISPR, tecnologia revolucionária de edição de DNA.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Emmanuelle_Charpentier_2015_%28cropped%29.jpg"
+            },
+            {
+                id: 40,
+                century: "Século XXI",
+                year: "2023",
+                title: "Lei da Igualdade Salarial no Brasil",
+                subtitle: "Brasil / Trabalho",
+                description: "Estabeleceu critérios obrigatórios de transparência para combater a desigualdade salarial entre homens e mulheres na mesma função.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Congresso_Nacional_do_Brasil.jpg"
+            },
+            {
+                id: 41,
+                century: "Século XXI",
+                year: "2024",
+                title: "Pacote Antifeminicídio",
+                subtitle: "Brasil / Direito Penal",
+                description: "Transformou o feminicídio em crime autônomo e elevou a pena de reclusão para 20 a 40 anos.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Congresso_Nacional_do_Brasil.jpg"
+            },
+            {
+                id: 42,
+                century: "Século XXI",
+                year: "2025",
+                title: "Mamografia pelo SUS a partir dos 40 anos",
+                subtitle: "Brasil / Saúde",
+                description: "Assegurou o direito de todas as mulheres realizarem o exame de mamografia pelo SUS a partir dos 40 anos para prevenção precoce.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Congresso_Nacional_do_Brasil.jpg"
+            },
+            {
+                id: 43,
+                century: "Século XXI",
+                year: "2026",
+                title: "Programa Alerta Mulher Segura e SI Mulher",
+                subtitle: "Brasil / Segurança",
+                description: "O Governo Federal implementou sistemas unificados de proteção integrados em tempo real por todo o país.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Congresso_Nacional_do_Brasil.jpg"
+            },
+            {
+                id: 44,
+                century: "Século XXI",
+                year: "2026",
+                title: "Ampliação da Lei Maria da Penha pelo STF",
+                subtitle: "Brasil / STF",
+                description: "O STF determinou em decisão unânime que as medidas protetivas da lei aplicam-se a agressões contra mulheres mesmo sem vínculo afetivo ou familiar.",
+                image: "https://upload.wikimedia.org/wikipedia/commons/d/d4/Supremo_Tribunal_Federal_-_Brasília_-_Brasil.jpg"
+            }
+        ];
+
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        function getStoredEvents() {
+            const stored = localStorage.getItem('women_timeline_events');
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch(e) {
+                    return defaultEvents;
+                }
+            }
+            return defaultEvents;
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            const noResults = document.getElementById('no-results');
+            container.innerHTML = '';
+
+            const events = getStoredEvents();
+
+            const filteredEvents = events.filter(item => {
+                const matchesFilter = currentFilter === 'all' || item.century === currentFilter;
+                const matchesSearch = searchQuery === '' || 
+                    item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    item.year.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    item.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    item.description.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesFilter && matchesSearch;
+            });
+
+            if (filteredEvents.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            filteredEvents.forEach((item, index) => {
+                const isEven = index % 2 === 0;
+                
+                let badgeGradient = "from-pink-500 to-rose-600";
+                if(item.subtitle.includes('Brasil')) badgeGradient = "from-emerald-500 to-teal-600";
+                else if(item.subtitle.includes('Ciência') || item.subtitle.includes('Nobel')) badgeGradient = "from-purple-500 to-indigo-600";
+                else if(item.subtitle.includes('Espaço')) badgeGradient = "from-blue-500 to-cyan-600";
+                else if(item.subtitle.includes('Cinema')) badgeGradient = "from-amber-500 to-orange-600";
+
+                const cardHTML = `
+                    <div class="flex flex-col md:flex-row items-center ${isEven ? 'md:flex-row-reverse' : ''} group">
+                        <!-- Content Side -->
+                        <div class="w-full md:w-1/2 ${isEven ? 'md:pl-12' : 'md:pr-12'} px-4">
+                            <div class="bg-slate-900/90 border border-slate-800 hover:border-pink-500/50 rounded-2xl p-6 md:p-8 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-pink-500/10 relative overflow-hidden">
+                                <div class="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"></div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="px-3.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r ${badgeGradient} text-white shadow-md">
+                                        ${item.year}
+                                    </span>
+                                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider bg-slate-800/80 px-2.5 py-1 rounded-md">
+                                        ${item.subtitle}
+                                    </span>
+                                </div>
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-3 tracking-tight group-hover:text-pink-300 transition-colors">
+                                    ${item.title}
+                                </h3>
+                                <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
+                                    ${item.description}
+                                </p>
+                                <div class="rounded-xl overflow-hidden h-56 sm:h-64 border border-slate-800/80 shadow-inner relative bg-slate-950 flex items-center justify-center">
+                                    <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://placehold.co/600x400/1e183b/ec4899?text=Retrato+Hist%C3%B3rico';">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Center Node -->
+                        <div class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 border-4 border-slate-950 shadow-lg text-white z-20 group-hover:scale-125 transition-transform duration-300">
+                            <span class="w-2.5 h-2.5 bg-white rounded-full shadow-sm"></span>
+                        </div>
+
+                        <!-- Empty Side for layout symmetry -->
+                        <div class="hidden md:block md:w-1/2"></div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', cardHTML);
+            });
+
+            lucide.createIcons();
+        }
+
+        function filterTimeline(category) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-pink-600', 'text-white', 'shadow-md', 'shadow-pink-600/30');
+                btn.classList.add('bg-slate-900/80', 'border', 'border-slate-700', 'text-slate-300');
+            });
+            const activeBtn = document.getElementById(`btn-${category}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-slate-900/80', 'border', 'border-slate-700', 'text-slate-300');
+                activeBtn.classList.add('bg-pink-600', 'text-white', 'shadow-md', 'shadow-pink-600/30');
+            }
+
+            renderTimeline();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value;
+            renderTimeline();
+        }
+
+        function openAddModal() {
+            document.getElementById('add-modal').classList.remove('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-modal').classList.add('hidden');
+            document.getElementById('fact-form').reset();
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const year = document.getElementById('input-year').value;
+            const subtitle = document.getElementById('input-subtitle').value;
+            const title = document.getElementById('input-title').value;
+            const image = document.getElementById('input-image').value;
+            const description = document.getElementById('input-desc').value;
+
+            // Determine century category based on year
+            let century = "Século XXI";
+            const yearNum = parseInt(year);
+            if (yearNum < 1900) century = "Século XIX";
+            else if (yearNum >= 1900 && yearNum < 1950) century = "Primeira Metade";
+            else if (yearNum >= 1950 && yearNum < 1970) century = "Meados";
+            else if (yearNum >= 1970 && yearNum < 2000) century = "Final";
+
+            const newFact = {
+                id: Date.now(),
+                century,
+                year,
+                title,
+                subtitle,
+                description,
+                image
+            };
+
+            const events = getStoredEvents();
+            events.unshift(newFact);
+            localStorage.setItem('women_timeline_events', JSON.stringify(events));
+
+            closeAddModal();
+            renderTimeline();
+        }
+
+        window.onload = function() {
+            if(!localStorage.getItem('women_timeline_events')) {
+                localStorage.setItem('women_timeline_events', JSON.stringify(defaultEvents));
+            }
+            renderTimeline();
+        }
+    </script>
+</body>
+</html>
